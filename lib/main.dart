@@ -1,5 +1,6 @@
 import 'package:drug/main_tab_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:drug/resources/colors.dart';
 
 void main() {
   runApp(const DrugApp());
@@ -11,6 +12,13 @@ class DrugApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(backgroundColor: mainColor, centerTitle: true),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: mainColor,
+          selectedItemColor: Colors.black,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       home: MainTabController(),
     );
