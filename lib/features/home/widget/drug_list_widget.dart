@@ -1,61 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:drug/models/drug_model.dart';
 
 Widget drugList() {
+  final drugs = [
+    Drug(
+      drugName: '약 이름 1',
+      time: '08:00',
+      day: '월',
+      totalDoseCount: 3,
+      takenDoseCount: 1,
+    ),
+    Drug(
+      drugName: '약 이름 2',
+      time: '12:00',
+      day: '화',
+      totalDoseCount: 2,
+      takenDoseCount: 0,
+    ),
+    Drug(
+      drugName: '약 이름 3',
+      time: '18:00',
+      day: '수',
+      totalDoseCount: 1,
+      takenDoseCount: 1,
+    ),
+  ];
+
   return ListView.separated(
-    padding: const EdgeInsets.symmetric(
-      horizontal: 18,
-      vertical: 12,
-    ), // 양옆, 위아래 여백
-    itemCount: 3,
+    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+    itemCount: drugs.length,
     separatorBuilder:
         (context, index) => const Divider(
           thickness: 1,
-          height: 24, // 줄과 줄 사이 간격
+          height: 24,
           color: Color.fromARGB(255, 196, 196, 196),
         ),
     itemBuilder: (context, index) {
-      final drugs = [
-        {
-          'drugName': '약 이름 1',
-          'time': '08:00',
-          'day': '월',
-          'totalDoseCount': 3,
-          'takenDoseCount': 1,
-        },
-        {
-          'drugName': '약 이름 2',
-          'time': '12:00',
-          'day': '화',
-          'totalDoseCount': 2,
-          'takenDoseCount': 0,
-        },
-        {
-          'drugName': '약 이름 3',
-          'time': '18:00',
-          'day': '수',
-          'totalDoseCount': 1,
-          'takenDoseCount': 1,
-        },
-      ];
       final drug = drugs[index];
-      return drugItem(
-        drugName: drug['drugName'] as String,
-        time: drug['time'] as String,
-        day: drug['day'] as String,
-        totalDoseCount: drug['totalDoseCount'] as int,
-        takenDoseCount: drug['takenDoseCount'] as int,
-      );
+      return drugItem(drug: drug);
     },
   );
 }
 
-Widget drugItem({
-  required String drugName,
-  required String time,
-  required String day,
-  required int totalDoseCount, // 총 복용 횟수
-  required int takenDoseCount, // 복용한 횟수
-}) {
+Widget drugItem({required Drug drug}) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     child: Row(
@@ -66,7 +53,7 @@ Widget drugItem({
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                drugName,
+                drug.drugName,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -74,7 +61,7 @@ Widget drugItem({
               ),
               const SizedBox(height: 4),
               Text(
-                time,
+                drug.time,
                 style: const TextStyle(fontSize: 18, color: Colors.grey),
               ),
             ],
@@ -88,12 +75,12 @@ Widget drugItem({
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                color: Colors.teal[200], // 원하는 색상으로 변경 가능
+                color: Colors.teal[200],
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
               child: Text(
-                day,
+                drug.day,
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -103,7 +90,7 @@ Widget drugItem({
             ),
             const SizedBox(height: 4),
             Text(
-              '$takenDoseCount / $totalDoseCount',
+              '${drug.takenDoseCount} / ${drug.totalDoseCount}',
               style: const TextStyle(fontSize: 24),
             ),
           ],
