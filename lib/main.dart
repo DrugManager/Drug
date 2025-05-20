@@ -1,4 +1,4 @@
-import 'package:drug/main_tab_controller.dart';
+import 'package:drug/startup/startup_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,10 @@ class DrugApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainTabController(),
+      theme: ThemeData(
+        fontFamily: 'dove_mayo'
+      ),
+      home: StartupScreen(),
     );
   }
 }
