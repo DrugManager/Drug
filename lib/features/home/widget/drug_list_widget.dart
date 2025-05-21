@@ -1,34 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:drug/models/drug_model.dart';
+import 'package:drug/features/home/widget/drug_list_viewmodel.dart';
 
 Widget drugList() {
-  final drugs = [
-    Drug(
-      drugName: '약 이름 1',
-      time: '08:00',
-      day: '월',
-      totalDoseCount: 3,
-      takenDoseCount: 1,
-    ),
-    Drug(
-      drugName: '약 이름 2',
-      time: '12:00',
-      day: '화',
-      totalDoseCount: 2,
-      takenDoseCount: 0,
-    ),
-    Drug(
-      drugName: '약 이름 3',
-      time: '18:00',
-      day: '수',
-      totalDoseCount: 1,
-      takenDoseCount: 1,
-    ),
-  ];
+  final viewModel = DrugListViewModel();
 
   return ListView.separated(
     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-    itemCount: drugs.length,
+    itemCount: viewModel.drugs.length,
     separatorBuilder:
         (context, index) => const Divider(
           thickness: 1,
@@ -36,7 +15,7 @@ Widget drugList() {
           color: Color.fromARGB(255, 196, 196, 196),
         ),
     itemBuilder: (context, index) {
-      final drug = drugs[index];
+      final drug = viewModel.drugs[index];
       return drugItem(drug: drug);
     },
   );

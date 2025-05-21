@@ -18,11 +18,9 @@ class DrugApp extends StatelessWidget {
           backgroundColor: mainColor,
           selectedItemColor: Colors.black,
         ),
+        fontFamily: 'dove_mayo',
       ),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'dove_mayo'
-      ),
       home: StartupScreen(),
     );
   }
