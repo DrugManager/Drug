@@ -21,5 +21,15 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
-
   uses-material-design: true
+
+  assets:
+    - assets/naver_icon.png
+    - assets/kakaotalk_icon.png
+    - assets/google_icon.png
+    - assets/apple_icon.png
+
+  fonts:
+    - family: dove_mayo
+      fonts:
+        - asset: assets/fonts/dovemayo.otf
