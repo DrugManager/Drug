@@ -21,7 +21,29 @@ class StartupScreen extends StatelessWidget {
           );
         }
 
-        if (snapshot.hasData && snapshot.data == true) {
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Error: ${snapshot.error}'),
+                  const SizedBox(height: 16,),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (_) => const StartupScreen()
+                          ),
+                        );
+                      },
+                      child: const Text('Retry'),
+                  )
+                ],
+              ),
+            ),
+          );
+        } else if (snapshot.hasData && snapshot.data == true) {
           return const MainTabController(); // 로그인 되어 있음
         } else {
           return const LoginScreen(); // 로그인 안 되어 있음
