@@ -1,4 +1,4 @@
-import 'package:drug/main_tab_controller.dart';
+import 'package:drug/startup/startup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:drug/resources/colors.dart';
 
@@ -20,7 +20,10 @@ class DrugApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: MainTabController(),
+      theme: ThemeData(
+        fontFamily: 'dove_mayo'
+      ),
+      home: StartupScreen(),
     );
   }
 }
