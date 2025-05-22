@@ -49,7 +49,14 @@ class LoginScreen extends StatelessWidget {
                 textColor: Color(0xFFEB4F4D),
                 borderColor: Color(0xFFEB4F4D),
                 backgroundColor: Colors.white,
-                onPressed: () => viewModel.login(context),
+                onPressed: () async{
+                  final user = await viewModel.signInWithGoogle();
+                  if (user != null) {
+                    await viewModel.saveUserInfo(context, user);
+                  }else{
+                    print("object");
+                  }
+                },
               ),
               const SizedBox(height: 10,),
               SocialLoginButton(
