@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "604758415079",
+    "project_id": "medianstory-8c6ff",
+    "storage_bucket": "medianstory-8c6ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604758415079:android:578ad2a4ec4e467cad7442",
+        "android_client_info": {
+          "package_name": "com.example.drug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604758415079-mb8mpt375g6ojn7r2pbef9t24tr4duis.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.drug",
+            "certificate_hash": "4589d9a3aca310dc34ccaa6883c4caae36c7778d"
+          }
+        },
+        {
+          "client_id": "604758415079-p4djipfjitpccnn83hjpvhf0k7avc858.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKjW5MPHS5wkq7X33itCgs7VC5LzpeqiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604758415079-p4djipfjitpccnn83hjpvhf0k7avc858.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

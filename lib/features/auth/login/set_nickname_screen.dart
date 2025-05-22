@@ -55,8 +55,9 @@ class _SetNicknameState extends State<SetNickname> {
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async{
                     final nickname = _nicknameController.text.trim();
+                    await viewModel.saveNickname(nickname);
                     viewModel.MoveToHome(context, nickname);
                   },
                   child: Text(
