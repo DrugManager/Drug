@@ -13,6 +13,7 @@ dependencies:
   firebase_auth: ^5.5.4
   google_sign_in: ^6.2.0
   flutter_naver_login: ^2.1.0
+  intl: ^0.20.0
 
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^2.6.1
