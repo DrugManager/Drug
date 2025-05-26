@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:drug/models/drug_model.dart';
 import 'package:drug/features/home/widget/drug_list_viewmodel.dart';
 
-Widget drugList(DrugListViewModel viewModel) {
+Widget drugList() {
+  final viewModel = DrugListViewModel();
 
   return ListView.separated(
     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
