@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drug/main_tab_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 
 class SetNicknameViewModel {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,6 +17,27 @@ class SetNicknameViewModel {
       'userNickName': nickname,
     });
   }
+
+  Future<void> updateNickname(String newNickname, String? loginChannel) async {
+    String? uid;
+
+    if (loginChannel == 'google') {
+      uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    } else if (loginChannel == 'naver') {
+      final res = await FlutterNaverLogin.getCurrentAccount();
+      uid = res.id;
+    } else if (loginChannel == 'kakao'){
+      uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    }
+    else {
+      throw Exception("Unknown login type");
+    }
+
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'userNickName': newNickname,
+    });
+  }
+
   void MoveToHome(BuildContext context, String nickname) async{
     Navigator.pushAndRemoveUntil(
       context,
