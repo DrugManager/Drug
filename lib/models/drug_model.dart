@@ -1,4 +1,5 @@
 class Drug {
+  final String id;
   final String drugName;
   final String time;
   final String day;
@@ -6,6 +7,7 @@ class Drug {
   final int takenDoseCount;
 
   Drug({
+    required this.id,
     required this.drugName,
     required this.time,
     required this.day,

@@ -4,6 +4,7 @@ import 'package:drug/models/drug_model.dart';
 class DrugListViewModel {
   final List<Drug> drugs = [
     Drug(
+      id: "",
       drugName: '약 이름 1',
       time: '08:00',
       day: '월',
@@ -11,6 +12,7 @@ class DrugListViewModel {
       takenDoseCount: 1,
     ),
     Drug(
+      id: "",
       drugName: '약 이름 2',
       time: '12:00',
       day: '화',
@@ -18,6 +20,7 @@ class DrugListViewModel {
       takenDoseCount: 0,
     ),
     Drug(
+      id: "",
       drugName: '약 이름 3',
       time: '18:00',
       day: '수',
