@@ -11,7 +11,7 @@ Widget drugList() {
     itemCount: viewModel.drugs.length,
     separatorBuilder:
         (context, index) => const Divider(
-          thickness: 1,
+          thickness: 1.4,
           height: 24,
           color: Color.fromARGB(255, 196, 196, 196),
         ),
@@ -23,39 +23,40 @@ Widget drugList() {
 }
 
 Widget drugItem({required Drug drug}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-    child: Slidable(
-      key: ValueKey(drug.id),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) {
-              //TODO: 수정 기능 구현
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${drug.drugName} 수정 기능')));
-            },
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            icon: Icons.edit,
-            label: '수정',
-          ),
-          SlidableAction(
-            onPressed: (context) {
-              //TODO 삭제 기능 구현
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${drug.drugName} 삭제 기능')));
-            },
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: '삭제',
-          ),
-        ],
-      ),
+  return Slidable(
+    key: ValueKey(drug.id),
+    endActionPane: ActionPane(
+      motion: const DrawerMotion(),
+      children: [
+        SlidableAction(
+          onPressed: (context) {
+            //TODO: 수정 기능 구현
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('${drug.drugName} 수정 기능')));
+          },
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          icon: Icons.edit,
+          label: '수정',
+        ),
+        SlidableAction(
+          onPressed: (context) {
+            //TODO 삭제 기능 구현
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('${drug.drugName} 삭제 기능')));
+          },
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          icon: Icons.delete,
+          label: '삭제',
+        ),
+      ],
+    ),
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+
       child: Row(
         children: [
           // 왼쪽: 약 이름과 시간
