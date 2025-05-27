@@ -1,3 +1,4 @@
+import 'package:drug/features/auth/login/login_view_model.dart';
 import 'package:drug/features/auth/login/set_nickname_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ class SetNickname extends StatefulWidget {
 }
 
 class _SetNicknameState extends State<SetNickname> {
+  final loginViewModel = LoginViewModel();
   final viewModel = SetNicknameViewModel();
   final TextEditingController _nicknameController = TextEditingController();
 
@@ -55,8 +57,11 @@ class _SetNicknameState extends State<SetNickname> {
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async{
                     final nickname = _nicknameController.text.trim();
+                    final loginChannel = loginViewModel.getLoginChannel();
+                    if (loginChannel == null) throw Exception("로그인 타입 정보가 없습니다.");
+                    await viewModel.updateNickname(nickname, await loginChannel);
                     viewModel.MoveToHome(context, nickname);
                   },
                   child: Text(
