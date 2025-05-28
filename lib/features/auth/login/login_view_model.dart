@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drug/enums/login_channel.dart';
 import 'package:drug/features/auth/login/set_nickname_screen.dart';
 import 'package:drug/main_tab_controller.dart';
 import 'package:drug/models/user_model.dart';
@@ -77,9 +78,11 @@ class LoginViewModel {
     */
   }
 
+  //todo: 애플로그인 처리하기
+
   Future<void> saveUserInfo({
     required BuildContext context,
-    required int loginChannel,
+    required LoginChannel loginChannel,
     firebase_auth.User? firebaseUser,
     NaverAccountResult? naverUser,
   }) async {
@@ -88,27 +91,44 @@ class LoginViewModel {
     String nickname = '';
 
     // 채널에 따라 분기 처리
-    if (loginChannel == 1 && firebaseUser != null) {
-      uid = firebaseUser.uid;
-      name = firebaseUser.displayName ?? '';
-      nickname = '구글유저 ${firebaseUser.displayName}';
-    } else if (loginChannel == 2 && naverUser != null) {
-      uid = naverUser.id ?? 'naver_uid';
-      name = naverUser.name ?? '';
-      nickname = naverUser.nickname ?? '네이버유저';
-    } else if (loginChannel == 3 && firebaseUser != null){
-      uid = firebaseUser.uid;
-      name = firebaseUser.displayName ?? '';
-      nickname = '카카오유저 ${firebaseUser.displayName}';
-    } else {
-      print("지원되지 않는 로그인 채널 또는 정보 없음");
-      return;
+    switch (loginChannel) {
+      case LoginChannel.google:
+        if (firebaseUser != null) {
+          uid = firebaseUser.uid;
+          name = firebaseUser.displayName ?? '';
+          nickname = '구글유저 ${firebaseUser.displayName}';
+        }
+        break;
+
+      case LoginChannel.naver:
+        if (naverUser != null) {
+          uid = naverUser.id ?? 'naver_uid';
+          name = naverUser.name ?? '';
+          nickname = naverUser.nickname ?? '네이버유저';
+        }
+        break;
+
+      case LoginChannel.kakao:
+        if (firebaseUser != null) {
+          uid = firebaseUser.uid;
+          name = firebaseUser.displayName ?? '';
+          nickname = '카카오유저 ${firebaseUser.displayName}';
+        }
+        break;
+
+      case LoginChannel.apple:
+        //todo: 애플유저 정보 저장
+        break;
+
+      default:
+        print("지원되지 않는 로그인 채널 또는 정보 없음");
+        return;
     }
 
     final userModel = UserModel(
       uid: uid,
       userNickName: nickname,
-      loginChannel: loginChannel,
+      loginChannel: loginChannel.code,
       userName: name,
       subscribeDate: DateTime.now().toIso8601String(),
     );
@@ -124,14 +144,22 @@ class LoginViewModel {
     );
   }
 
-  Future<void> storeLoginChannel(String channel) async {
+  Future<void> storeLoginChannel(LoginChannel loginChannel) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('loginChannel', channel);
+    await prefs.setInt('loginChannel', loginChannel.code);
   }
 
-  Future<String?> getLoginChannel() async {
+  Future<LoginChannel?> getLoginChannel() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('loginChannel');
+    final code = prefs.getInt('loginchannel');
+    if (code != null) {
+      try {
+        return LoginChannelCode.fromCode(code);
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 
   //홈화면으로 이동

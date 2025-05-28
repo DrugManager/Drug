@@ -1,3 +1,4 @@
+import 'package:drug/enums/login_channel.dart';
 import 'package:drug/features/auth/login/login_view_model.dart';
 import 'package:drug/features/auth/login/set_nickname_view_model.dart';
 import 'package:flutter/material.dart';
@@ -59,9 +60,9 @@ class _SetNicknameState extends State<SetNickname> {
                   ),
                   onPressed: () async{
                     final nickname = _nicknameController.text.trim();
-                    final loginChannel = loginViewModel.getLoginChannel();
-                    if (loginChannel == null) throw Exception("로그인 타입 정보가 없습니다.");
-                    await viewModel.updateNickname(nickname, await loginChannel);
+                    final  LoginChannel? channel = await loginViewModel.getLoginChannel();
+                    if (channel == null) throw Exception("로그인 타입 정보가 없습니다.");
+                    await viewModel.updateNickname(nickname, channel);
                     viewModel.MoveToHome(context, nickname);
                   },
                   child: Text(

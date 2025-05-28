@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drug/enums/login_channel.dart';
 import 'package:drug/main_tab_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,16 +19,18 @@ class SetNicknameViewModel {
     });
   }
 
-  Future<void> updateNickname(String newNickname, String? loginChannel) async {
+  Future<void> updateNickname(String newNickname, LoginChannel loginChannel) async {
     String? uid;
 
-    if (loginChannel == 'google') {
+    if (loginChannel == LoginChannel.google) {
       uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-    } else if (loginChannel == 'naver') {
+    } else if (loginChannel == LoginChannel.naver) {
       final res = await FlutterNaverLogin.getCurrentAccount();
       uid = res.id;
-    } else if (loginChannel == 'kakao'){
+    } else if (loginChannel == LoginChannel.kakao){
       uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    } else if (loginChannel == LoginChannel.apple) {
+      //todo: apple uid 가져오기
     }
     else {
       throw Exception("Unknown login type");

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drug/enums/login_channel.dart';
 import 'package:drug/features/auth/login/login_view_model.dart';
 import 'package:drug/widgets/social_login_button.dart';
 import 'package:flutter/material.dart';
@@ -52,14 +53,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(user.id)
                               .get();
-                          await viewModel.storeLoginChannel('naver');
+                          await viewModel.storeLoginChannel(LoginChannel.naver);
 
                           if (userDoc.exists) {
                             viewModel.MoveToHome(context);
                           } else {
                             await viewModel.saveUserInfo(
                               context: context,
-                              loginChannel: 2,
+                              loginChannel: LoginChannel.naver,
                               naverUser: user,
                             );
                           }
@@ -91,14 +92,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(user.uid)
                               .get();
-                          await viewModel.storeLoginChannel('kakao');
+                          await viewModel.storeLoginChannel(LoginChannel.kakao);
 
                           if (userDoc.exists) {
                             viewModel.MoveToHome(context);
                           } else {
                             await viewModel.saveUserInfo(
                               context: context,
-                              loginChannel: 3,
+                              loginChannel: LoginChannel.kakao,
                               firebaseUser: user,
                             );
                           }
@@ -130,14 +131,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               .collection('users')
                               .doc(user.uid)
                               .get();
-                          await viewModel.storeLoginChannel('google');
+                          await viewModel.storeLoginChannel(LoginChannel.google);
 
                           if (userDoc.exists) {
                             viewModel.MoveToHome(context);
                           } else {
                             await viewModel.saveUserInfo(
                                 context: context,
-                                loginChannel: 1,
+                                loginChannel: LoginChannel.google,
                                 firebaseUser: user
                             );
                           }
@@ -157,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       textColor: Colors.black,
                       borderColor: Colors.black,
                       backgroundColor: Colors.white,
-                      onPressed: () => viewModel.login(context),
+                      onPressed: () {
+                        //todo: apple 로그인 로직
+                      },
                     ),
                   ],
                 ),
