@@ -171,4 +171,81 @@ class LoginViewModel {
     );
   }
 
+  Future<void> handleLogin({
+    required BuildContext context,
+    required LoginChannel loginChannel,
+  }) async {
+    try {
+      if (loginChannel == LoginChannel.naver) {
+        final naverUser = await signInWithNaver();
+        if (naverUser == null) return;
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(naverUser.id)
+            .get();
+
+        await storeLoginChannel(LoginChannel.naver);
+
+        if (userDoc.exists) {
+          MoveToHome(context);
+        } else {
+          await saveUserInfo(
+            context: context,
+            loginChannel: LoginChannel.naver,
+            naverUser: naverUser,
+          );
+        }
+      } else if (loginChannel == LoginChannel.kakao){
+        final firebaseUser = await signInWithKakao();
+
+        if (firebaseUser == null) return;
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .get();
+
+        await storeLoginChannel(loginChannel);
+
+        if (userDoc.exists) {
+          MoveToHome(context);
+        } else {
+          await saveUserInfo(
+            context: context,
+            loginChannel: loginChannel,
+            firebaseUser: firebaseUser,
+          );
+        }
+      } else if (loginChannel == LoginChannel.google) {
+        final firebaseUser = await signInWithGoogle();
+
+        if (firebaseUser == null) return;
+
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .get();
+
+        await storeLoginChannel(loginChannel);
+
+        if (userDoc.exists) {
+          MoveToHome(context);
+        } else {
+          await saveUserInfo(
+            context: context,
+            loginChannel: loginChannel,
+            firebaseUser: firebaseUser,
+          );
+        }
+      } else if (loginChannel == LoginChannel.apple){
+        //todo: apple 로그인 처리
+      } else {
+        print("존재하지않는 로그인 채널");
+      }
+    } catch (e) {
+      debugPrint('로그인 실패: $e');
+    }
+  }
+
 }

@@ -12,6 +12,10 @@ void main() async{
   await Firebase.initializeApp();
 
   final kakaoAppKey = dotenv.env['KAKAO_NATIVE_APP_KEY'];
+  if (kakaoAppKey == null || kakaoAppKey.isEmpty) {
+    debugPrint('KAKAO_NATIVE_APP_KEY가 .env 파일에 정의되지 않았습니다.');
+    return;
+  }
   KakaoSdk.init(
     nativeAppKey: kakaoAppKey
   );

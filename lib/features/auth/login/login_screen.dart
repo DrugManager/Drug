@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:drug/enums/login_channel.dart';
 import 'package:drug/features/auth/login/login_view_model.dart';
 import 'package:drug/widgets/social_login_button.dart';
@@ -42,34 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderColor: Colors.green,
                       backgroundColor: Colors.white,
                       onPressed: () async{
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try{
-                          final user = await viewModel.signInWithNaver();
-                          if (user == null) return;
-
-                          final userDoc = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.id)
-                              .get();
-                          await viewModel.storeLoginChannel(LoginChannel.naver);
-
-                          if (userDoc.exists) {
-                            viewModel.MoveToHome(context);
-                          } else {
-                            await viewModel.saveUserInfo(
-                              context: context,
-                              loginChannel: LoginChannel.naver,
-                              naverUser: user,
-                            );
-                          }
-                        }finally{
-                          if (mounted) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          }
+                        setState(() => isLoading = true);
+                        try {
+                          await viewModel.handleLogin(
+                            context: context,
+                            loginChannel: LoginChannel.naver,
+                          );
+                        } finally {
+                          if (mounted) setState(() => isLoading = false);
                         }
                         },
                     ),
@@ -81,34 +60,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderColor: Colors.yellow,
                       backgroundColor: Colors.white,
                       onPressed: () async{
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try{
-                          final user = await viewModel.signInWithKakao();
-                          if (user == null) return;
-
-                          final userDoc = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.uid)
-                              .get();
-                          await viewModel.storeLoginChannel(LoginChannel.kakao);
-
-                          if (userDoc.exists) {
-                            viewModel.MoveToHome(context);
-                          } else {
-                            await viewModel.saveUserInfo(
-                              context: context,
-                              loginChannel: LoginChannel.kakao,
-                              firebaseUser: user,
-                            );
-                          }
-                        }finally{
-                          if (mounted) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          }
+                        setState(() => isLoading = true);
+                        try {
+                          await viewModel.handleLogin(
+                            context: context,
+                            loginChannel: LoginChannel.kakao,
+                          );
+                        } finally {
+                          if (mounted) setState(() => isLoading = false);
                         }
                         },
                     ),
@@ -120,34 +79,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderColor: Color(0xFFEB4F4D),
                       backgroundColor: Colors.white,
                       onPressed: () async{
-                        setState(() {
-                          isLoading = true;
-                        });
-                        try{
-                          final user = await viewModel.signInWithGoogle();
-                          if (user == null) return;
-
-                          final userDoc = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(user.uid)
-                              .get();
-                          await viewModel.storeLoginChannel(LoginChannel.google);
-
-                          if (userDoc.exists) {
-                            viewModel.MoveToHome(context);
-                          } else {
-                            await viewModel.saveUserInfo(
-                                context: context,
-                                loginChannel: LoginChannel.google,
-                                firebaseUser: user
-                            );
-                          }
-                        }finally{
-                          if (mounted) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                          }
+                        setState(() => isLoading = true);
+                        try {
+                          await viewModel.handleLogin(
+                            context: context,
+                            loginChannel: LoginChannel.google,
+                          );
+                        } finally {
+                          if (mounted) setState(() => isLoading = false);
                         }
                         },
                     ),
@@ -158,8 +97,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       textColor: Colors.black,
                       borderColor: Colors.black,
                       backgroundColor: Colors.white,
-                      onPressed: () {
-                        //todo: apple 로그인 로직
+                      onPressed: () async{
+                        setState(() => isLoading = true);
+                        try {
+                          await viewModel.handleLogin(
+                            context: context,
+                            loginChannel: LoginChannel.apple,
+                          );
+                        } finally {
+                          if (mounted) setState(() => isLoading = false);
+                        }
                       },
                     ),
                   ],

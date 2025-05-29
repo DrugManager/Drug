@@ -10,13 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="162b8adc-c916-4581-8141-404fe9e2582e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/enums/login_channel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/features/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/login_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/features/auth/login/login_view_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/login_view_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/auth/login/set_nickname_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/set_nickname_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/auth/login/set_nickname_view_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/set_nickname_view_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
