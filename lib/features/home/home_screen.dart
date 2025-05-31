@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:drug/resources/colors.dart';
 import 'package:drug/features/home/widget/drug_list_widget.dart';
+import 'package:drug/features/add_drug/add_drug_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -26,10 +27,10 @@ class HomeScreen extends StatelessWidget {
       body: drugList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //TODO - 약 추가 기능 구현
-          ScaffoldMessenger.of(
+          Navigator.push(
             context,
-          ).showSnackBar(const SnackBar(content: Text('약 추가 기능')));
+            MaterialPageRoute(builder: (context) => const AddDrugScreen()),
+          );
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         backgroundColor: mainColor,
