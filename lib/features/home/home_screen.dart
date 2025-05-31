@@ -24,6 +24,18 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: drugList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //TODO - 약 추가 기능 구현
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('약 추가 기능')));
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: mainColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

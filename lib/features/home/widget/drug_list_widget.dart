@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:drug/models/drug_model.dart';
-import 'package:drug/features/home/widget/drug_list_viewmodel.dart';
+import 'package:drug/features/home/widget/drug_list_view_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 Widget drugList() {
@@ -12,7 +12,7 @@ Widget drugList() {
     separatorBuilder:
         (context, index) => const Divider(
           thickness: 1.4,
-          height: 24,
+          height: 16,
           color: Color.fromARGB(255, 196, 196, 196),
         ),
     itemBuilder: (context, index) {
