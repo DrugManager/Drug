@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:drug/resources/colors.dart';
 import 'package:drug/features/home/widget/drug_list_widget.dart';
-import 'package:drug/features/add_drug/add_drug_screen.dart';
+import 'package:drug/features/add_drug/add_drug_screen_new.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: drugList(),
+      body: const DrugListWidget(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

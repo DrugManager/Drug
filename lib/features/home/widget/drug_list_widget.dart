@@ -1,28 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:drug/models/drug_model.dart';
-import 'package:drug/features/home/widget/drug_list_view_model.dart';
+import 'package:drug/services/drug_service.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-Widget drugList() {
-  final viewModel = DrugListViewModel();
+class DrugListWidget extends StatefulWidget {
+  const DrugListWidget({super.key});
 
-  return ListView.separated(
-    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-    itemCount: viewModel.drugs.length,
-    separatorBuilder:
-        (context, index) => const Divider(
-          thickness: 1.4,
-          height: 16,
-          color: Color.fromARGB(255, 196, 196, 196),
-        ),
-    itemBuilder: (context, index) {
-      final drug = viewModel.drugs[index];
-      return drugItem(drug: drug);
-    },
-  );
+  @override
+  State<DrugListWidget> createState() => DrugListWidgetState();
 }
 
-Widget drugItem({required Drug drug}) {
+class DrugListWidgetState extends State<DrugListWidget> {
+  final DrugService _drugService = DrugService();
+
+  // 외부에서 호출 가능한 새로고침 메서드 (StreamBuilder 사용시에는 필요 없지만 호환성을 위해 유지)
+  Future<void> refreshDrugs() async {
+    // StreamBuilder를 사용하므로 별도의 새로고침이 필요 없음
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<Drug>>(
+      stream: _drugService.getDrugsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
+        }
+
+        final drugs = snapshot.data ?? [];
+
+        if (drugs.isEmpty) {
+          return const Center(
+            child: Text(
+              '등록된 약이 없습니다.\n+ 버튼을 눌러 약을 등록해보세요!',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          itemCount: drugs.length,
+          separatorBuilder:
+              (context, index) => const Divider(
+                thickness: 1.4,
+                height: 16,
+                color: Color.fromARGB(255, 196, 196, 196),
+              ),
+          itemBuilder: (context, index) {
+            final drug = drugs[index];
+            return drugItem(drug: drug, onDelete: () => _deleteDrug(drug.id));
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteDrug(String drugId) async {
+    await _drugService.deleteDrug(drugId);
+    // StreamBuilder가 자동으로 UI를 업데이트하므로 setState 불필요
+  }
+}
+
+Widget drugItem({required Drug drug, required VoidCallback onDelete}) {
   return Slidable(
     key: ValueKey(drug.id),
     endActionPane: ActionPane(
@@ -42,10 +88,7 @@ Widget drugItem({required Drug drug}) {
         ),
         SlidableAction(
           onPressed: (context) {
-            //TODO 삭제 기능 구현
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('${drug.drugName} 삭제 기능')));
+            onDelete();
           },
           backgroundColor: Colors.red,
           foregroundColor: Colors.white,

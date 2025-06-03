@@ -1,31 +1,26 @@
 import 'package:drug/models/drug_model.dart';
+import 'package:drug/services/drug_service.dart';
 
-//TODO - 더미데이터 파이어베이스 수정 필요
 class DrugListViewModel {
-  final List<Drug> drugs = [
-    Drug(
-      id: "",
-      drugName: '약 이름 1',
-      time: '08:00',
-      day: '월',
-      totalDoseCount: 3,
-      takenDoseCount: 1,
-    ),
-    Drug(
-      id: "",
-      drugName: '약 이름 2',
-      time: '12:00',
-      day: '화',
-      totalDoseCount: 2,
-      takenDoseCount: 0,
-    ),
-    Drug(
-      id: "",
-      drugName: '약 이름 3',
-      time: '18:00',
-      day: '수',
-      totalDoseCount: 1,
-      takenDoseCount: 1,
-    ),
-  ];
+  final DrugService _drugService = DrugService();
+  List<Drug> drugs = [];
+
+  // Firestore에서 약 목록 불러오기
+  Future<void> loadDrugs() async {
+    try {
+      drugs = await _drugService.getDrugs();
+    } catch (e) {
+      print('약 목록 불러오기 실패: $e');
+    }
+  }
+
+  // 약 삭제
+  Future<void> deleteDrug(String drugId) async {
+    try {
+      await _drugService.deleteDrug(drugId);
+      drugs.removeWhere((drug) => drug.id == drugId);
+    } catch (e) {
+      print('약 삭제 실패: $e');
+    }
+  }
 }
