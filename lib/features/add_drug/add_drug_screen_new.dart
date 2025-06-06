@@ -71,7 +71,7 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
               children: [
                 Icon(Icons.arrow_back, color: mainColor, size: 20),
                 const SizedBox(width: 4),
-                Text('뒤로가기', style: TextStyle(color: mainColor, fontSize: 12)),
+                Text('뒤로가기', style: TextStyle(color: mainColor, fontSize: 16)),
               ],
             ),
           ),
