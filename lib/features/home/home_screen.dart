@@ -12,12 +12,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Key _drugListKey = UniqueKey();
+  final GlobalKey<DrugListWidgetState> _drugListKey =
+      GlobalKey<DrugListWidgetState>();
 
   void _refreshDrugList() {
-    setState(() {
-      _drugListKey = UniqueKey();
-    });
+    _drugListKey.currentState?.refreshDrugs();
   }
 
   @override

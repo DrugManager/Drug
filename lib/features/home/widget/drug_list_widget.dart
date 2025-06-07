@@ -4,7 +4,9 @@ import 'package:drug/features/home/widget/drug_list_view_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DrugListWidget extends StatefulWidget {
-  const DrugListWidget({super.key});
+  final VoidCallback? onRefresh;
+
+  const DrugListWidget({super.key, this.onRefresh});
 
   @override
   State<DrugListWidget> createState() => DrugListWidgetState();
@@ -32,6 +34,13 @@ class DrugListWidgetState extends State<DrugListWidget> {
       isLoading = true;
     });
     await _loadDrugs();
+    if (widget.onRefresh != null) {
+      widget.onRefresh!();
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    await refreshDrugs();
   }
 
   @override
@@ -41,28 +50,40 @@ class DrugListWidgetState extends State<DrugListWidget> {
     }
 
     if (_viewModel.drugs.isEmpty) {
-      return const Center(
-        child: Text(
-          '등록된 약이 없습니다.\n+ 버튼을 눌러 약을 등록해보세요!',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-          textAlign: TextAlign.center,
+      return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: const SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: 400,
+            child: Center(
+              child: Text(
+                '등록된 약이 없습니다.\n+ 버튼을 눌러 약을 등록해보세요!',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-      itemCount: _viewModel.drugs.length,
-      separatorBuilder:
-          (context, index) => const Divider(
-            thickness: 1.4,
-            height: 16,
-            color: Color.fromARGB(255, 196, 196, 196),
-          ),
-      itemBuilder: (context, index) {
-        final drug = _viewModel.drugs[index];
-        return drugItem(drug: drug, onDelete: () => _deleteDrug(drug.id));
-      },
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        itemCount: _viewModel.drugs.length,
+        separatorBuilder:
+            (context, index) => const Divider(
+              thickness: 1.4,
+              height: 16,
+              color: Color.fromARGB(255, 196, 196, 196),
+            ),
+        itemBuilder: (context, index) {
+          final drug = _viewModel.drugs[index];
+          return drugItem(drug: drug, onDelete: () => _deleteDrug(drug.id));
+        },
+      ),
     );
   }
 
