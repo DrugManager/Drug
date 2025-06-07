@@ -9,6 +9,8 @@ class DrugListViewModel {
   Future<void> loadDrugs() async {
     try {
       drugs = await _drugService.getDrugs();
+      // 생성날짜 기준으로 정렬 (최신순)
+      drugs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     } catch (e) {
       print('약 목록 불러오기 실패: $e');
     }

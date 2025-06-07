@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:drug/models/drug_model.dart';
-import 'package:drug/services/drug_service.dart';
+import 'package:drug/features/home/widget/drug_list_view_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DrugListWidget extends StatefulWidget {
@@ -11,60 +11,88 @@ class DrugListWidget extends StatefulWidget {
 }
 
 class DrugListWidgetState extends State<DrugListWidget> {
-  final DrugService _drugService = DrugService();
+  final DrugListViewModel _viewModel = DrugListViewModel();
+  bool isLoading = true;
 
-  // 외부에서 호출 가능한 새로고침 메서드 (StreamBuilder 사용시에는 필요 없지만 호환성을 위해 유지)
+  @override
+  void initState() {
+    super.initState();
+    _loadDrugs();
+  }
+
+  Future<void> _loadDrugs() async {
+    await _viewModel.loadDrugs();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   Future<void> refreshDrugs() async {
-    // StreamBuilder를 사용하므로 별도의 새로고침이 필요 없음
-    setState(() {});
+    setState(() {
+      isLoading = true;
+    });
+    await _loadDrugs();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Drug>>(
-      stream: _drugService.getDrugsStream(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
-        }
+    if (_viewModel.drugs.isEmpty) {
+      return const Center(
+        child: Text(
+          '등록된 약이 없습니다.\n+ 버튼을 눌러 약을 등록해보세요!',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
 
-        final drugs = snapshot.data ?? [];
-
-        if (drugs.isEmpty) {
-          return const Center(
-            child: Text(
-              '등록된 약이 없습니다.\n+ 버튼을 눌러 약을 등록해보세요!',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-          );
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-          itemCount: drugs.length,
-          separatorBuilder:
-              (context, index) => const Divider(
-                thickness: 1.4,
-                height: 16,
-                color: Color.fromARGB(255, 196, 196, 196),
-              ),
-          itemBuilder: (context, index) {
-            final drug = drugs[index];
-            return drugItem(drug: drug, onDelete: () => _deleteDrug(drug.id));
-          },
-        );
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      itemCount: _viewModel.drugs.length,
+      separatorBuilder:
+          (context, index) => const Divider(
+            thickness: 1.4,
+            height: 16,
+            color: Color.fromARGB(255, 196, 196, 196),
+          ),
+      itemBuilder: (context, index) {
+        final drug = _viewModel.drugs[index];
+        return drugItem(drug: drug, onDelete: () => _deleteDrug(drug.id));
       },
     );
   }
 
   Future<void> _deleteDrug(String drugId) async {
-    await _drugService.deleteDrug(drugId);
-    // StreamBuilder가 자동으로 UI를 업데이트하므로 setState 불필요
+    // 삭제 확인 대화상자 표시
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('약 삭제'),
+          content: const Text('이 약을 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('삭제', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+
+    // 사용자가 삭제를 확인한 경우에만 실행
+    if (confirmed == true) {
+      await _viewModel.deleteDrug(drugId);
+      setState(() {});
+    }
   }
 }
 
