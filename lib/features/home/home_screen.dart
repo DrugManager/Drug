@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:drug/resources/colors.dart';
 import 'package:drug/features/home/widget/drug_list_widget.dart';
+import 'package:drug/features/add_drug/add_drug_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<DrugListWidgetState> _drugListKey =
+      GlobalKey<DrugListWidgetState>();
+
+  void _refreshDrugList() {
+    _drugListKey.currentState?.refreshDrugs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +36,24 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: drugList(),
+      body: DrugListWidget(key: _drugListKey),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddDrugScreen()),
+          );
+
+          // 약 등록이 성공했을 때 목록 새로고침
+          if (result == true) {
+            _refreshDrugList();
+          }
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        backgroundColor: mainColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
