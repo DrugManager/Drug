@@ -151,7 +151,7 @@ Widget drugItem({required Drug drug, required VoidCallback onDelete}) {
 
       child: Row(
         children: [
-          // 왼쪽: 약 이름과 시간
+          // 왼쪽: 약 이름과 복용기간
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,42 +165,78 @@ Widget drugItem({required Drug drug, required VoidCallback onDelete}) {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  drug.time,
+                  '${drug.startTime} - ${drug.endTime}',
                   style: const TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               ],
             ),
           ),
-          // 오른쪽: 요일과 복용 횟수
+          // 오른쪽: 요일들과 횟수
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: Colors.teal[200],
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  drug.day,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              // 요일들을 가로로 나열 (모든 요일 선택 시 "매일" 표시)
+              _buildWeekdaysDisplay(drug.weekdays),
               const SizedBox(height: 4),
+              // 복용 횟수 표시
               Text(
                 '${drug.takenDoseCount} / ${drug.totalDoseCount}',
-                style: const TextStyle(fontSize: 24),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
         ],
       ),
     ),
+  );
+}
+
+Widget _buildWeekdaysDisplay(List<String> weekdays) {
+  // 모든 요일이 선택된 경우 "매일" 표시
+  if (weekdays.length == 7) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.teal[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Text(
+        '매일',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  // 일부 요일만 선택된 경우 각 요일을 원형 버튼으로 표시
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children:
+        weekdays.map((weekday) {
+          return Container(
+            width: 22,
+            height: 22,
+            margin: const EdgeInsets.only(left: 2),
+            decoration: BoxDecoration(
+              color: Colors.teal[200],
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              weekday,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          );
+        }).toList(),
   );
 }

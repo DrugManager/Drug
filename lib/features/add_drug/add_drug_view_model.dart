@@ -25,18 +25,26 @@ class AddDrugViewModel {
   // 기본값 처리된 Drug 객체 생성
   Drug createDrug({
     required String drugName,
-    String? time,
-    String? day,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<String> weekdays,
+    required String startTime,
+    required String endTime,
+    required bool isRepeating,
     String? totalDoseCountStr,
   }) {
     return Drug(
       id: '', // Firestore에서 자동 생성
       drugName: drugName,
-      time: time?.isEmpty == true ? '08:00' : (time ?? '08:00'),
-      day: day?.isEmpty == true ? '월' : (day ?? '월'),
+      startDate: startDate,
+      endDate: endDate,
+      weekdays: weekdays.isEmpty ? ['월'] : weekdays,
+      startTime: startTime.isEmpty ? '08:00' : startTime,
+      endTime: endTime.isEmpty ? '20:00' : endTime,
+      isRepeating: isRepeating,
       totalDoseCount: int.tryParse(totalDoseCountStr ?? '') ?? 1,
       takenDoseCount: 0,
-      createdAt: DateTime.now(), // 현재 시간으로 설정
+      createdAt: DateTime.now(),
     );
   }
 }
