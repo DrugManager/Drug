@@ -9,6 +9,7 @@ class Drug {
   final bool isRepeating;
   final int totalDoseCount;
   final int takenDoseCount;
+  final bool hasTotalDoseCount; // 총 복용횟수가 있는지 여부
   final DateTime createdAt;
 
   Drug({
@@ -22,6 +23,7 @@ class Drug {
     required this.isRepeating,
     required this.totalDoseCount,
     required this.takenDoseCount,
+    required this.hasTotalDoseCount,
     required this.createdAt,
   });
 
@@ -37,6 +39,7 @@ class Drug {
       'isRepeating': isRepeating,
       'totalDoseCount': totalDoseCount,
       'takenDoseCount': takenDoseCount,
+      'hasTotalDoseCount': hasTotalDoseCount,
       'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
@@ -58,6 +61,7 @@ class Drug {
       isRepeating: json['isRepeating'] ?? false,
       totalDoseCount: json['totalDoseCount'] ?? 1,
       takenDoseCount: json['takenDoseCount'] ?? 0,
+      hasTotalDoseCount: json['hasTotalDoseCount'] ?? false,
       createdAt: DateTime.fromMillisecondsSinceEpoch(
         json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
       ),
