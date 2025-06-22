@@ -1,39 +1,72 @@
-//TODO - 약 등록 화면
-
 import 'package:flutter/material.dart';
 import 'package:drug/resources/colors.dart';
-import 'package:drug/features/add_drug/add_drug_view_model.dart';
+import 'package:drug/models/drug_model.dart';
+import 'package:drug/features/edit_drug/edit_drug_view_model.dart';
 import 'package:drug/features/add_drug/widgets/section_title_widget.dart';
 import 'package:drug/features/add_drug/widgets/selectable_button_widget.dart';
 import 'package:drug/features/add_drug/widgets/weekday_selector_widget.dart';
 import 'package:drug/features/add_drug/widgets/total_dose_count_widget.dart';
 import 'package:drug/features/add_drug/widgets/repeat_setting_widget.dart';
 
-class AddDrugScreen extends StatefulWidget {
-  const AddDrugScreen({super.key});
+class EditDrugScreen extends StatefulWidget {
+  final Drug drug;
+
+  const EditDrugScreen({super.key, required this.drug});
 
   @override
-  State<AddDrugScreen> createState() => _AddDrugScreenState();
+  State<EditDrugScreen> createState() => _EditDrugScreenState();
 }
 
-class _AddDrugScreenState extends State<AddDrugScreen> {
-  final AddDrugViewModel _viewModel = AddDrugViewModel();
-  final TextEditingController _drugNameController = TextEditingController();
-  final TextEditingController _totalDoseCountController =
-      TextEditingController();
+class _EditDrugScreenState extends State<EditDrugScreen> {
+  final EditDrugViewModel _viewModel = EditDrugViewModel();
+  late TextEditingController _drugNameController;
+  late TextEditingController _totalDoseCountController;
 
-  DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now().add(const Duration(days: 7));
-  Duration _startTime = const Duration(hours: 8);
-  Duration _endTime = const Duration(hours: 20);
-  bool _isRepeating = false;
+  late DateTime _startDate;
+  late DateTime _endDate;
+  late Duration _startTime;
+  late Duration _endTime;
+  late bool _isRepeating;
+  late bool _hasTotalDoseCount;
   Duration _repeatInterval = const Duration(hours: 8);
-  bool _hasTotalDoseCount = false;
 
   final List<String> _weekdays = ['월', '화', '수', '목', '금', '토', '일'];
-  final Set<String> _selectedWeekdays = <String>{};
+  late Set<String> _selectedWeekdays;
 
-  bool _isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    _initializeFromDrug();
+  }
+
+  void _initializeFromDrug() {
+    _drugNameController = TextEditingController(text: widget.drug.drugName);
+    _totalDoseCountController = TextEditingController(
+      text:
+          widget.drug.hasTotalDoseCount
+              ? widget.drug.totalDoseCount.toString()
+              : '',
+    );
+    _startDate = widget.drug.startDate;
+    _endDate = widget.drug.endDate;
+    _selectedWeekdays = Set.from(widget.drug.weekdays);
+    _isRepeating = widget.drug.isRepeating;
+    _hasTotalDoseCount = widget.drug.hasTotalDoseCount;
+
+    // 시간 파싱
+    final startTimeParts = widget.drug.startTime.split(':');
+    final endTimeParts = widget.drug.endTime.split(':');
+
+    _startTime = Duration(
+      hours: int.tryParse(startTimeParts[0]) ?? 8,
+      minutes: int.tryParse(startTimeParts[1]) ?? 0,
+    );
+
+    _endTime = Duration(
+      hours: int.tryParse(endTimeParts[0]) ?? 20,
+      minutes: int.tryParse(endTimeParts[1]) ?? 0,
+    );
+  }
 
   void _selectDate(bool isStartDate) {
     _viewModel.showDatePickerModal(
@@ -99,7 +132,7 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
     });
   }
 
-  Future<void> _saveDrug() async {
+  Future<void> _updateDrug() async {
     if (!_viewModel.validateInput(
       _drugNameController.text,
       _selectedWeekdays,
@@ -107,15 +140,15 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
-
     try {
       final totalDoseCount =
           _hasTotalDoseCount
-              ? int.tryParse(_totalDoseCountController.text) ?? 1
-              : 1;
+              ? int.tryParse(_totalDoseCountController.text) ??
+                  widget.drug.totalDoseCount
+              : widget.drug.totalDoseCount;
 
-      final drug = _viewModel.createDrug(
+      final updatedDrug = Drug(
+        id: widget.drug.id,
         drugName: _drugNameController.text,
         startDate: _startDate,
         endDate: _endDate,
@@ -124,22 +157,16 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
         endTime: _viewModel.formatTime(_endTime),
         isRepeating: _isRepeating,
         totalDoseCount: totalDoseCount,
+        takenDoseCount: widget.drug.takenDoseCount,
         hasTotalDoseCount: _hasTotalDoseCount,
+        createdAt: widget.drug.createdAt,
       );
 
-      await _viewModel.addDrug(drug);
-      if (mounted) {
-        Navigator.pop(context, true);
-        _viewModel.showSuccessMessage(context, '약이 등록되었습니다');
-      }
+      await _viewModel.updateDrug(updatedDrug);
+      Navigator.pop(context, true);
+      _viewModel.showSuccessMessage(context, '약 정보가 수정되었습니다');
     } catch (e) {
-      if (mounted) {
-        _viewModel.showErrorMessage(context, '등록 실패: $e');
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      _viewModel.showErrorMessage(context, '수정 실패: $e');
     }
   }
 
@@ -150,7 +177,7 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         title: Text(
-          '약 등록',
+          '약 수정',
           style: TextStyle(
             color: mainColor,
             fontSize: 20,
@@ -288,29 +315,26 @@ class _AddDrugScreenState extends State<AddDrugScreen> {
 
             const SizedBox(height: 40),
 
-            // 등록하기 버튼
+            // 수정하기 버튼
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _saveDrug,
+                onPressed: _updateDrug,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: mainColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                          '등록하기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                child: const Text(
+                  '수정하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],

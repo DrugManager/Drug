@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:drug/resources/colors.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
@@ -16,9 +17,7 @@ void main() async{
     debugPrint('KAKAO_NATIVE_APP_KEY가 .env 파일에 정의되지 않았습니다.');
     return;
   }
-  KakaoSdk.init(
-    nativeAppKey: kakaoAppKey
-  );
+  KakaoSdk.init(nativeAppKey: kakaoAppKey);
   runApp(const DrugApp());
 }
 
@@ -28,6 +27,13 @@ class DrugApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('ko', 'KR'), Locale('en', 'US')],
+      locale: Locale('ko', 'KR'),
       theme: ThemeData(
         appBarTheme: AppBarTheme(backgroundColor: mainColor, centerTitle: true),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
