@@ -1,4 +1,6 @@
+import 'package:drug/models/drug_model.dart';
 import 'package:drug/resources/colors.dart';
+import 'package:drug/services/drug_service.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -9,22 +11,68 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  final Map<DateTime, List<String>> _events = {
-    DateTime.utc(2025, 6, 11): ['운동하기', '약 복용'],
-    DateTime.utc(2025, 6, 12): ['회의 참석'],
-  };
+
+  @override
+  void initState() {
+    super.initState();
+    loadDrugs();
+  }
+
+  final Map<DateTime, List<Drug>> _events = {};
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   bool _calendarShrunk = false;
 
-  List<String> _getEventsForDay(DateTime day) {
+  List<Drug> _getEventsForDay(DateTime day) {
     return _events[DateTime.utc(day.year, day.month, day.day)] ?? [];
+  }
+
+  final DrugService _drugService = DrugService();
+
+  String _weekdayToKorean(int weekday) {
+    const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+    return weekdays[weekday - 1];
+  }
+
+  Map<DateTime, List<Drug>> _generateEventsFromDrugs(List<Drug> drugs) {
+    final Map<DateTime, List<Drug>> events = {};
+
+    for (final drug in drugs) {
+      DateTime current = drug.startDate;
+
+      while (!current.isAfter(drug.endDate)) {
+        final koreanDay = _weekdayToKorean(current.weekday);
+        if (drug.weekdays.contains(koreanDay)) {
+          final dateKey = DateTime.utc(current.year, current.month, current.day);
+          events.putIfAbsent(dateKey, () => []).add(drug);
+        }
+        current = current.add(const Duration(days: 1));
+      }
+    }
+
+    return events;
+  }
+
+  Future<void> loadDrugs() async {
+    try {
+      final allDrugs = await _drugService.getDrugs();
+
+      final generated = _generateEventsFromDrugs(allDrugs);
+      setState(() {
+        _events.clear();
+        _events.addAll(generated);
+      });
+
+      print('최종 표시될 약 개수: ${allDrugs.length}');
+    } catch (e) {
+      print('약 목록 불러오기 실패: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final events = _selectedDay == null ? null : _getEventsForDay(_selectedDay!);
+    final List<Drug>? events = _selectedDay == null ? null : _getEventsForDay(_selectedDay!);
 
     return Scaffold(
       body: Column(
@@ -93,9 +141,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   : ListView.builder(
                 itemCount: events.length,
                 itemBuilder: (context, index) {
+                  final drug = events[index];
                   return ListTile(
                     leading: const Icon(Icons.event_note),
-                    title: Text(events[index]),
+                    title: Text(drug.drugName),
+                    subtitle: Text('${drug.startTime} ~ ${drug.endTime}'),
                   );
                 },
               ),
