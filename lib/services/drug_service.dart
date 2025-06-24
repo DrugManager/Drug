@@ -39,18 +39,36 @@ class DrugService {
   // 약 목록 조회 (기존 방식 유지)
   Future<List<Drug>> getDrugs() async {
     final user = _auth.currentUser;
-    if (user == null) return [];
+    print('현재 사용자: ${user?.uid}');
+    print('현재 사용자 이메일: ${user?.email}');
 
-    final querySnapshot =
-        await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .collection('drugs')
-            .get();
+    if (user == null) {
+      print('사용자가 로그인되지 않음');
+      return [];
+    }
 
-    return querySnapshot.docs
-        .map((doc) => Drug.fromJson(doc.data(), doc.id))
-        .toList();
+    try {
+      final querySnapshot =
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('drugs')
+              .get();
+
+      print('조회된 문서 수: ${querySnapshot.docs.length}');
+
+      final drugs =
+          querySnapshot.docs.map((doc) {
+            print('문서 ID: ${doc.id}, 데이터: ${doc.data()}');
+            return Drug.fromJson(doc.data(), doc.id);
+          }).toList();
+
+      print('변환된 약 개수: ${drugs.length}');
+      return drugs;
+    } catch (e) {
+      print('약 목록 조회 오류: $e');
+      return [];
+    }
   }
 
   // 약 삭제
@@ -64,5 +82,32 @@ class DrugService {
         .collection('drugs')
         .doc(drugId)
         .delete();
+  }
+
+  // 약 업데이트 (복용 횟수 증가 등)
+  Future<void> updateDrug(Drug drug) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('updateDrug: 사용자가 로그인되지 않음');
+      return;
+    }
+
+    try {
+      print(
+        'updateDrug: 약 업데이트 시작 - ID: ${drug.id}, 복용횟수: ${drug.takenDoseCount}',
+      );
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('drugs')
+          .doc(drug.id)
+          .update(drug.toJson());
+
+      print('updateDrug: 약 업데이트 완료');
+    } catch (e) {
+      print('updateDrug: 약 업데이트 실패 - $e');
+      rethrow;
+    }
   }
 }

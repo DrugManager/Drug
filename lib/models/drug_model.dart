@@ -1,19 +1,29 @@
 class Drug {
   final String id;
   final String drugName;
-  final String time;
-  final String day;
+  final DateTime startDate;
+  final DateTime endDate;
+  final List<String> weekdays; // ['월', '화', '수', '목', '금', '토', '일']
+  final String startTime;
+  final String endTime;
+  final bool isRepeating;
   final int totalDoseCount;
   final int takenDoseCount;
-  final DateTime createdAt; // 생성날짜 추가
+  final bool hasTotalDoseCount; // 총 복용횟수가 있는지 여부
+  final DateTime createdAt;
 
   Drug({
     required this.id,
     required this.drugName,
-    required this.time,
-    required this.day,
+    required this.startDate,
+    required this.endDate,
+    required this.weekdays,
+    required this.startTime,
+    required this.endTime,
+    required this.isRepeating,
     required this.totalDoseCount,
     required this.takenDoseCount,
+    required this.hasTotalDoseCount,
     required this.createdAt,
   });
 
@@ -21,11 +31,16 @@ class Drug {
   Map<String, dynamic> toJson() {
     return {
       'drugName': drugName,
-      'time': time,
-      'day': day,
+      'startDate': startDate.millisecondsSinceEpoch,
+      'endDate': endDate.millisecondsSinceEpoch,
+      'weekdays': weekdays,
+      'startTime': startTime,
+      'endTime': endTime,
+      'isRepeating': isRepeating,
       'totalDoseCount': totalDoseCount,
       'takenDoseCount': takenDoseCount,
-      'createdAt': createdAt.millisecondsSinceEpoch, // 타임스탬프로 저장
+      'hasTotalDoseCount': hasTotalDoseCount,
+      'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
 
@@ -34,13 +49,26 @@ class Drug {
     return Drug(
       id: id,
       drugName: json['drugName'] ?? '',
-      time: json['time'] ?? '',
-      day: json['day'] ?? '',
-      totalDoseCount: json['totalDoseCount'] ?? 0,
+      startDate: DateTime.fromMillisecondsSinceEpoch(
+        json['startDate'] ?? DateTime.now().millisecondsSinceEpoch,
+      ),
+      endDate: DateTime.fromMillisecondsSinceEpoch(
+        json['endDate'] ?? DateTime.now().millisecondsSinceEpoch,
+      ),
+      weekdays: List<String>.from(json['weekdays'] ?? []),
+      startTime: json['startTime'] ?? '08:00',
+      endTime: json['endTime'] ?? '20:00',
+      isRepeating: json['isRepeating'] ?? false,
+      totalDoseCount: json['totalDoseCount'] ?? 1,
       takenDoseCount: json['takenDoseCount'] ?? 0,
+      hasTotalDoseCount: json['hasTotalDoseCount'] ?? false,
       createdAt: DateTime.fromMillisecondsSinceEpoch(
         json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
       ),
     );
   }
+
+  // 기존 코드와의 호환성을 위한 getter들
+  String get time => startTime;
+  String get day => weekdays.isNotEmpty ? weekdays.first : '월';
 }
