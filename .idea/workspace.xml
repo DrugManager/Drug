@@ -10,10 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="162b8adc-c916-4581-8141-404fe9e2582e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/features/calendar/calendar_view_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/login_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/features/auth/login/login_view_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/auth/login/login_view_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/features/calendar/calendar_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/features/calendar/calendar_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +84,7 @@
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat#4-firebase연동&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat#13-캘린더-뷰&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/projects/Personal-calendar-management-app/first_app/pubspec.yaml&quot;,
